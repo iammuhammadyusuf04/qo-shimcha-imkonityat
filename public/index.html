@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Ombor va Chop</title>
 <style>
 :root{--bg:#0f172a;--card:#1e293b;--tx:#e2e8f0;--mut:#94a3b8;--ac:#38bdf8;--ok:#4ade80;--er:#f87171}
@@ -31,7 +34,7 @@ nav button{margin:0 4px;background:transparent;color:var(--mut)}nav button.on{co
 </head>
 <body>
 <div id="toast"></div>
-<header><h1>📦 Ombor va Chop</h1><span class="mut"><span id="dot" class="dot"></span><span id="agent">agent?</span></span></header>
+<header><h1>📦 Ombor va Chop</h1><button id="install" class="sec sm hide">⬇ O'rnatish</button> <span class="mut"><span id="offline" class="hide error">oflayn · </span><span id="dot" class="dot"></span><span id="agent">agent?</span></span></header>
 
 <section id="login" class="card hide">
   <label>API kalit</label><input id="key" type="password" autocomplete="off">
@@ -122,6 +125,10 @@ async function refresh(){
     if(!$('tab-jobs').classList.contains('hide'))await loadJobs();
   }catch{}
 }
+if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+let dip;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('install').classList.remove('hide')});
+$('install').onclick=async()=>{dip.prompt();await dip.userChoice;dip=null;$('install').classList.add('hide')};
+const net=()=>$('offline').classList.toggle('hide',navigator.onLine);addEventListener('online',net);addEventListener('offline',net);net();
 if(!KEY)$('login').classList.remove('hide');else refresh();
 setInterval(refresh,4000);
 </script>

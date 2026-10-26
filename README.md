@@ -29,3 +29,9 @@ Tashqi tizim API si aniq bo'lgach `server/connectors.js` dagi `toWire()` (maydon
 
 ## Telefon API
 `x-api-key` sarlavhasi bilan: `GET/POST /api/products`, `PUT/DELETE /api/products/:id`, `POST /api/products/:id/sync`, `POST /api/print` (`{items:[{productId,copies}], format:"tspl"|"escpos"}`), `GET /api/jobs`, `GET /api/status`.
+
+## PWA o'rnatish
+Telefonda HTTPS manzilni oching (Chrome: "O'rnatish" tugmasi yoki menyu → "Ilovani o'rnatish"; iPhone Safari: Ulashish → "Bosh ekranga qo'shish"). Oflayn ham ochiladi, lekin tovar saqlash va chop etish uchun internet kerak. HTTPS uchun masalan Cloudflare Tunnel yoki reverse proxy ishlating.
+
+## Xprinter
+Etiketka modellari (XP-365B, XP-420B, …) uchun "Etiketka (TSPL)", chek modellari (XP-58, XP-80, …) uchun "Chek (ESC/POS)" ni tanlang. `agent/start-agent.bat` ni to'ldirib, Windows ishga tushishiga qo'shing.

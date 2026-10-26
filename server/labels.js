@@ -5,7 +5,7 @@ const money = (n) => new Intl.NumberFormat('ru-RU').format(Number(n) || 0);
 const clean = (s) => String(s ?? '').replace(/["\r\n]/g, ' ').slice(0, 40);
 
 export function tsplLabel(items, { w, h }) {
-  let out = `SIZE ${w} mm,${h} mm\r\nGAP 2 mm,0\r\nDIRECTION 1\r\nCODEPAGE 1252\r\n`;
+  let out = `SIZE ${w} mm,${h} mm\r\nGAP 2 mm,0\r\nDIRECTION 1\r\nREFERENCE 0,0\r\nDENSITY 8\r\nSPEED 4\r\nCODEPAGE 1252\r\n`;
   for (const { product, copies } of items) {
     out += `CLS\r\n`;
     out += `TEXT 8,8,"3",0,1,1,"${clean(product.name).slice(0, Math.floor(w * 0.6))}"\r\n`;
