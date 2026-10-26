@@ -57,7 +57,8 @@ nav button{margin:0 4px;background:transparent;color:var(--mut)}nav button.on{co
 <section id="tab-list" class="hide">
   <input id="q" placeholder="Qidirish: nom, shtrix-kod…" style="margin-bottom:12px">
   <div class="card" id="list"></div>
-  <div class="card"><label>Printer formati</label>
+  <div class="card"><label>Printer (kompyuterdagi)</label><select id="printerSel"><option value="">Kompyuterda tanlangan</option></select>
+    <label>Printer formati</label>
     <select id="format"><option value="tspl">Etiketka (TSPL)</option><option value="escpos">Chek (ESC/POS)</option></select>
     <button id="print">Tanlanganlarni chop etish</button></div>
 </section>
@@ -110,7 +111,7 @@ async function loadList(){
 $('q').oninput=loadList;
 $('print').onclick=async()=>{
   if(!picked.size)return toast('Tovar tanlang',1);
-  try{await api('/print',{method:'POST',body:{format:$('format').value,items:[...picked].map(([productId,copies])=>({productId,copies}))}});
+  try{await api('/print',{method:'POST',body:{format:$('format').value,printer:$('printerSel').value,items:[...picked].map(([productId,copies])=>({productId,copies}))}});
     toast('Chop etishga yuborildi');picked.clear();loadList()}catch(e){toast(e.message,1)}
 };
 async function loadJobs(){
@@ -120,7 +121,8 @@ async function loadJobs(){
 }
 async function refresh(){
   try{
-    const s=await api('/status');$('dot').classList.toggle('on',s.agentOnline);$('agent').textContent=s.agentOnline?'printer onlayn':'printer oflayn';
+    const s=await api('/status');$('dot').classList.toggle('on',s.agentOnline);$('agent').textContent=s.agentOnline?'kompyuter onlayn'+(s.agent.host?' ('+s.agent.host+')':''):'kompyuter oflayn';
+    const ps=$('printerSel'),v=ps.value;ps.innerHTML='<option value="">Kompyuterda tanlangan'+(s.agent.selected?': '+esc(s.agent.selected):'')+'</option>'+s.agent.printers.map(n=>`<option ${n===v?'selected':''}>${esc(n)}</option>`).join('');
     if(!$('tab-list').classList.contains('hide'))await loadList();
     if(!$('tab-jobs').classList.contains('hide'))await loadJobs();
   }catch{}

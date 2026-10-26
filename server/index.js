@@ -10,6 +10,8 @@ import { buildPrint } from './labels.js';
 const products = collection('products');
 const jobs = collection('jobs');
 const TARGETS = ['pos', 'ombor'];
+let agentSeen = 0;
+let agent = { printers: [], selected: '', host: '', at: 0 };
 const publicDir = new URL('../public/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 
 const eq = (a, b) => {
@@ -65,6 +67,11 @@ async function route(req, res, url) {
       if (queued.length) jobs.save();
       return send(res, 200, queued);
     }
+    if (p === '/api/agent/printers' && m === 'POST') {
+      const b = await readJson(req);
+      agent = { printers: (b.printers || []).map(String).slice(0, 50), selected: String(b.selected || ''), host: String(b.host || ''), at: Date.now() };
+      return send(res, 200, { ok: true });
+    }
     const ack = p.match(/^\/api\/agent\/jobs\/([\w-]+)\/(done|failed)$/);
     if (ack && m === 'POST') {
       const body = await readJson(req);
@@ -82,6 +89,7 @@ async function route(req, res, url) {
       return send(res, 200, {
         targets: Object.fromEntries(TARGETS.map((t) => [t, !!cfg.targets[t].url])),
         agentOnline: Date.now() - agentSeen < 15000,
+        agent: { printers: agent.printers, selected: agent.selected, host: agent.host },
         queued: jobs.all().filter((j) => j.status === 'queued' || j.status === 'sent').length,
         label: { w: cfg.labelW, h: cfg.labelH },
       });
@@ -118,7 +126,7 @@ async function route(req, res, url) {
       const format = b.format === 'escpos' ? 'escpos' : 'tspl';
       const data = buildPrint(format, items, { w: cfg.labelW, h: cfg.labelH });
       const job = jobs.insert({
-        status: 'queued', format, printer: b.printer || '',
+        status: 'queued', format, printer: String(b.printer || '').slice(0, 100),
         summary: items.map((i) => `${i.product.name} ×${i.copies}`).join(', ').slice(0, 200),
         data: data.toString('base64'),
       });
@@ -140,7 +148,6 @@ async function route(req, res, url) {
   send(res, 200, fs.readFileSync(full), types[path.extname(full)] || 'application/octet-stream');
 }
 
-let agentSeen = 0;
 export const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://x');

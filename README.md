@@ -15,14 +15,12 @@ Tashqi kutubxonalar yo'q, Node 18+ yetarli.
 1. `cp .env.example .env`, `API_KEY` va `AGENT_KEY` ni o'zgartiring, POS/Ombor URL va tokenlarini kiriting.
 2. `npm start`, so'ng telefonda `http://<server>:3000` ni oching (HTTPS orqasida bo'lsa "Bosh ekranga qo'shish" mumkin) va API kalitni kiriting.
 
-## Windows agent (printer ulangan kompyuter)
-```
-set SERVER_URL=https://sizning-server
-set AGENT_KEY=...
-set PRINTER_NAME=XP-365B     (bo'sh bo'lsa standart printer)
-node agent\agent.js
-```
-Agent serverga o'zi ulanadi, shuning uchun kompyuterda port ochish shart emas. Etiketka o'lchami `.env` da `LABEL_WIDTH_MM` / `LABEL_HEIGHT_MM`.
+## Kompyuter dasturi (Windows, printer ulangan kompyuter)
+Node.js o'rnatilgan bo'lsin. `agent\install-windows.bat` ni ikki marta bosing: agent ishga tushadi va Windows bilan birga avtomatik ochiladi. Sozlash oynasi ochiladi (`http://127.0.0.1:3777`, uni ham PWA sifatida o'rnatish mumkin):
+1. Server manzili va agent kalitini kiriting, "Saqlash".
+2. Ro'yxatdan Xprinter ni tanlang, "Sinov etiketkasi" bilan tekshiring.
+
+Agent serverga o'zi ulanadi (kompyuterda port ochish shart emas), printerlar ro'yxatini serverga yuboradi. Telefonda "Narxlar" bo'limida kompyuterdagi printerlardan birini tanlash yoki kompyuterda tanlanganini ishlatish mumkin.
 
 ## API moslash
 Tashqi tizim API si aniq bo'lgach `server/connectors.js` dagi `toWire()` (maydon nomlari) va `.env` dagi `*_PRODUCTS_PATH` / `*_UPDATE_PATH` ni o'zgartiring. Yuborish xatosi bo'lsa tovar baribir saqlanadi, ro'yxatda ↻ tugmasi bilan qayta yuboriladi.
