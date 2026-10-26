@@ -1,0 +1,12 @@
+{
+  "name": "qo-shimcha-imkoniyat",
+  "version": "1.0.0",
+  "description": "Telefondan POS va omborzaxirasi.online ga tovar qo'shish, narx chiqarish va kompyuterdagi printerdan chop etish",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "agent": "node agent/agent.js",
+    "test": "node --test test/api.test.js"
+  },
+  "engines": { "node": ">=18" }
+}
